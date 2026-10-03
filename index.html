@@ -29,7 +29,7 @@ input[type=file]{display:none}
 .section:last-child{border-bottom:0;margin-bottom:0}
 .section h2{font-size:10px;letter-spacing:.16em;color:#aaa;font-weight:600;margin:0 0 11px}
 .row{display:grid;grid-template-columns:115px 1fr 52px;align-items:center;gap:9px;margin:9px 0}
-.row.wide{grid-template-columns:115px 1fr}
+.row.wide{grid-template-columns:115px 1fr}.row{grid-template-columns:115px 1fr 62px}.num{width:62px;background:#181818;color:#eee;border:1px solid #333;border-radius:5px;padding:5px 4px;font-size:11px}.num:focus{outline:1px solid var(--accent);border-color:var(--accent)}
 label{font-size:11px;color:#c8c8c8}
 output{font-size:11px;color:var(--accent);text-align:right;font-variant-numeric:tabular-nums}
 input[type=range]{width:100%;accent-color:var(--accent)}
@@ -81,20 +81,20 @@ select{width:100%;background:#181818;color:#eee;border:1px solid #333;border-rad
 <option value="random">Random</option><option value="blue">Blue-noise-ish</option>
 </select></div>
 <div class="row" id="matrixRow"><label>Matrix</label><select id="matrix"><option value="2">2 × 2</option><option value="4" selected>4 × 4</option><option value="8">8 × 8</option><option value="16">16 × 16</option></select></div>
-<div class="row"><label>Amount</label><input id="amount" type="range" min="0" max="100" value="100"><output></output></div>
-<div class="row"><label>Size</label><input id="size" type="range" min="1" max="32" value="1"><output></output></div>
-<div class="row"><label>Threshold</label><input id="threshold" type="range" min="0" max="100" value="50"><output></output></div>
+<div class="row"><label>Amount</label><input id="amount" type="range" min="0" max="100" value="100"><input class="num" id="amountNum" type="number" min="0" max="100" value="100"></div>
+<div class="row"><label>Size</label><input id="size" type="range" min="0" max="100" value="1"><input class="num" id="sizeNum" type="number" min="0" max="100" value="1"></div>
+<div class="row"><label>Threshold</label><input id="threshold" type="range" min="0" max="100" value="50"><input class="num" id="thresholdNum" type="number" min="0" max="100" value="50"></div>
 </section>
 
 <section class="section">
 <h2>PALETTE</h2>
-<div class="row"><label>Colors</label><input id="colors" type="range" min="1" max="20" value="2"><output></output></div>
+<div class="row"><label>Colors</label><input id="colors" type="range" min="1" max="20" value="2"><input class="num" id="colorsNum" type="number" min="1" max="20" value="2"></div>
 <div class="row wide"><label>Color mode</label><select id="colorMode"><option value="bw">Monochrome</option><option value="palette">Image palette</option><option value="custom">Custom palette</option></select></div>
-<div class="row"><label>Brightness</label><input id="brightness" type="range" min="-100" max="100" value="0"><output></output></div>
-<div class="row"><label>Contrast</label><input id="contrast" type="range" min="-100" max="100" value="0"><output></output></div>
-<div class="row"><label>Gamma</label><input id="gamma" type="range" min="20" max="300" value="100"><output></output></div>
-<div class="row"><label>Saturation</label><input id="saturation" type="range" min="0" max="200" value="100"><output></output></div>
-<div class="row"><label>Hue</label><input id="hue" type="range" min="-180" max="180" value="0"><output></output></div>
+<div class="row"><label>Brightness</label><input id="brightness" type="range" min="0" max="100" value="50"><input class="num" id="brightnessNum" type="number" min="0" max="100" value="50"></div>
+<div class="row"><label>Contrast</label><input id="contrast" type="range" min="0" max="100" value="50"><input class="num" id="contrastNum" type="number" min="0" max="100" value="50"></div>
+<div class="row"><label>Gamma</label><input id="gamma" type="range" min="0" max="100" value="50"><input class="num" id="gammaNum" type="number" min="0" max="100" value="50"></div>
+<div class="row"><label>Saturation</label><input id="saturation" type="range" min="0" max="100" value="100"><input class="num" id="saturationNum" type="number" min="0" max="100" value="100"></div>
+<div class="row"><label>Hue</label><input id="hue" type="range" min="0" max="100" value="50"><input class="num" id="hueNum" type="number" min="0" max="100" value="50"></div>
 <div class="check"><input id="invert" type="checkbox"><label for="invert">Invert tones</label></div>
 <div class="note">Palette mode derives up to 20 colors from the image. Custom mode uses the swatches below.</div>
 <div id="swatches" class="swatches"></div>
@@ -102,9 +102,9 @@ select{width:100%;background:#181818;color:#eee;border:1px solid #333;border-rad
 
 <section class="section">
 <h2>DIFFUSION / PATTERN</h2>
-<div class="row"><label>Strength</label><input id="strength" type="range" min="0" max="200" value="100"><output></output></div>
-<div class="row"><label>Angle</label><input id="angle" type="range" min="-45" max="45" value="0"><output></output></div>
-<div class="row"><label>Jitter</label><input id="jitter" type="range" min="0" max="100" value="0"><output></output></div>
+<div class="row"><label>Strength</label><input id="strength" type="range" min="0" max="100" value="100"><input class="num" id="strengthNum" type="number" min="0" max="100" value="100"></div>
+<div class="row"><label>Angle</label><input id="angle" type="range" min="0" max="100" value="50"><input class="num" id="angleNum" type="number" min="0" max="100" value="50"></div>
+<div class="row"><label>Jitter</label><input id="jitter" type="range" min="0" max="100" value="0"><input class="num" id="jitterNum" type="number" min="0" max="100" value="0"></div>
 <div class="check"><input id="serpentine" type="checkbox" checked><label for="serpentine">Serpentine scan</label></div>
 <div class="check"><input id="ditherAlpha" type="checkbox"><label for="ditherAlpha">Dither transparency</label></div>
 </section>
@@ -112,7 +112,7 @@ select{width:100%;background:#181818;color:#eee;border:1px solid #333;border-rad
 <section class="section">
 <h2>OUTPUT</h2>
 <div class="row wide"><label>Shape</label><select id="shape"><option value="original">Original frame</option><option value="square">Square</option><option value="circle">Circle</option></select></div>
-<div class="row"><label>Max pixels</label><input id="maxSize" type="range" min="256" max="3000" step="64" value="1600"><output></output></div>
+<div class="row"><label>Max pixels</label><input id="maxSize" type="range" min="0" max="100" value="50"><input class="num" id="maxSizeNum" type="number" min="0" max="100" value="50"></div>
 <div class="note">The output keeps the source aspect ratio unless Square or Circle is selected. Download uses the processed image at the selected maximum size.</div>
 </section>
 </aside>
@@ -122,7 +122,7 @@ select{width:100%;background:#181818;color:#eee;border:1px solid #333;border-rad
 <script>
 const $=id=>document.getElementById(id);
 const canvas=$('canvas'),ctx=canvas.getContext('2d',{willReadFrequently:true});
-const state={method:'floyd',matrix:4,amount:100,size:1,threshold:50,colors:2,colorMode:'bw',brightness:0,contrast:0,gamma:1,saturation:100,hue:0,invert:false,strength:100,angle:0,jitter:0,serpentine:true,ditherAlpha:false,shape:'original',maxSize:1600,palette:['#000000','#ffffff','#e85d3f','#f0c96a','#4b7bec','#55b987','#a56bdb','#d8d8d8','#6b6b6b','#242424','#e7b7a5','#88a9d6','#d6d28b','#6f8f78','#b98b68','#7e6a91','#c7a94d','#8c4d4d','#3c6370','#eeeeee']};
+const state={method:'floyd',matrix:4,amount:100,size:1,threshold:50,colors:2,colorMode:'bw',brightness:0,contrast:50,gamma:50,saturation:100,hue:50,invert:false,strength:100,angle:50,jitter:0,serpentine:true,ditherAlpha:false,shape:'original',maxSize:50,palette:['#000000','#ffffff','#e85d3f','#f0c96a','#4b7bec','#55b987','#a56bdb','#d8d8d8','#6b6b6b','#242424','#e7b7a5','#88a9d6','#d6d28b','#6f8f78','#b98b68','#7e6a91','#c7a94d','#8c4d4d','#3c6370','#eeeeee']};
 let source=null,processed=null,renderQueued=false;
 let zoom=1,panX=0,panY=0,dragging=false,dragStartX=0,dragStartY=0,startPanX=0,startPanY=0;
 
@@ -142,26 +142,15 @@ function matrix16(){const b=bayerBase[8],out=[];for(let y=0;y<16;y++){out[y]=[];
 bayerBase[16]=matrix16();
 
 function bind(id,key,conv=v=>+v,fmt=v=>v){
- const el=$(id),out=el.parentElement.querySelector('output');
- const set=()=>{state[key]=conv(el.value);out.textContent=fmt(state[key]);queue()};
- el.addEventListener('input',set);set();
+ const el=$(id),num=$(id+'Num');
+ const clampNum=v=>Math.max(+el.min,Math.min(+el.max,Number.isFinite(v)?v:+el.value));
+ const set=v=>{const n=clampNum(+v);el.value=n;num.value=n;state[key]=conv(n);queue()};
+ el.addEventListener('input',()=>set(el.value));num.addEventListener('input',()=>set(num.value));num.addEventListener('blur',()=>set(num.value));
+ set(el.value);
 }
-bind('amount','amount',v=>+v,v=>v+'%');bind('size','size',v=>+v,v=>v+' px');bind('threshold','threshold',v=>+v,v=>v+'%');
-bind('colors','colors',v=>+v,v=>v);bind('brightness','brightness',v=>+v,v=>v);bind('contrast','contrast',v=>+v,v=>v);
-bind('gamma','gamma',v=>+v/100,v=>v.toFixed(2));bind('saturation','saturation',v=>+v,v=>v+'%');bind('hue','hue',v=>+v,v=>v+'°');
-bind('strength','strength',v=>+v,v=>v+'%');bind('angle','angle',v=>+v,v=>v+'°');bind('jitter','jitter',v=>+v,v=>v+'%');bind('maxSize','maxSize',v=>+v,v=>v+' px');
-$('method').onchange=e=>{state.method=e.target.value;updateVisibility();queue()};
-$('matrix').onchange=e=>{state.matrix=+e.target.value;queue()};
-$('colorMode').onchange=e=>{state.colorMode=e.target.value;queue()};
-$('invert').onchange=e=>{state.invert=e.target.checked;queue()};
-$('serpentine').onchange=e=>{state.serpentine=e.target.checked;queue()};
-$('ditherAlpha').onchange=e=>{state.ditherAlpha=e.target.checked;queue()};
-$('shape').onchange=e=>{state.shape=e.target.value;queue()};
-$('upload').onchange=loadImage;
-$('download').onclick=downloadPNG;
-$('saveSettings').onclick=saveSettings;
-$('loadSettings').onchange=loadSettings;
-$('reset').onclick=reset;
+bind('amount','amount');bind('size','size');bind('threshold','threshold');
+bind('colors','colors');bind('brightness','brightness');bind('contrast','contrast');bind('gamma','gamma');
+bind('saturation','saturation');bind('hue','hue');bind('strength','strength');bind('angle','angle');bind('jitter','jitter');bind('maxSize','maxSize');
 function updateVisibility(){$('matrixRow').style.display=state.method==='bayer'?'grid':'none'}
 
 function applyZoom(){
@@ -190,7 +179,7 @@ function loadImage(e){
 function queue(){if(!source)return;if(!renderQueued){renderQueued=true;requestAnimationFrame(()=>{renderQueued=false;render()})}}
 function render(){
  if(!source)return;
- const scale=Math.min(1,state.maxSize/Math.max(source.naturalWidth,source.naturalHeight));
+ const outputMax=256+Math.round(state.maxSize/100*2744); const scale=Math.min(1,outputMax/Math.max(source.naturalWidth,source.naturalHeight));
  const w=Math.max(1,Math.round(source.naturalWidth*scale)),h=Math.max(1,Math.round(source.naturalHeight*scale));
  const base=document.createElement('canvas');base.width=w;base.height=h;const bx=base.getContext('2d',{willReadFrequently:true});bx.drawImage(source,0,0,w,h);
  const input=bx.getImageData(0,0,w,h);
@@ -202,7 +191,7 @@ function render(){
 
 function preprocess(data){
  const d=data.data;
- const sat=state.saturation/100,ga=state.gamma,br=state.brightness,co=state.contrast;
+ const sat=state.saturation/100,ga=Math.max(.01,state.gamma/50),br=(state.brightness-50)/100,co=state.contrast/50;
  for(let i=0;i<d.length;i+=4){
    let r=d[i]/255,g=d[i+1]/255,b=d[i+2]/255;
    r=Math.pow(Math.max(0,Math.min(1,r)),1/ga);g=Math.pow(Math.max(0,Math.min(1,g)),1/ga);b=Math.pow(Math.max(0,Math.min(1,b)),1/ga);
@@ -242,7 +231,7 @@ function dither(data,w,h){
  return out;
 }
 function ordered(data,out,w,h,pal){
- const src=data.data,od=out.data,m=bayerBase[state.matrix],n=state.matrix,cell=Math.max(1,state.size),ang=state.angle*Math.PI/180;
+ const src=data.data,od=out.data,m=bayerBase[state.matrix],n=state.matrix,cell=Math.max(1,state.size),ang=(state.angle-50)*Math.PI/90;
  for(let y=0;y<h;y++)for(let x=0;x<w;x++){
   const sx=Math.floor(x/cell)*cell,sy=Math.floor(y/cell)*cell;
   const i=(y*w+x)*4;let r=src[i],g=src[i+1],b=src[i+2];
