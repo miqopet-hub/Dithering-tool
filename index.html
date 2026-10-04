@@ -126,7 +126,8 @@ select{width:100%;background:#181818;color:#eee;border:1px solid #333;border-rad
 <script>
 const $=id=>document.getElementById(id);
 const canvas=$('canvas'),ctx=canvas.getContext('2d',{willReadFrequently:true});
-const state={ditherMode:'diffusion',method:'floyd',matrix:4,amount:100,size:0,threshold:50,colors:2,palettePreset:'original',colorMode:'bw',brightness:50,contrast:50,gamma:50,saturation:100,hue:50,invert:false,strength:100,angle:50,jitter:0,serpentine:true,ditherAlpha:false,shape:'original',maxSize:50,palette:['#000000','#ffffff','#e85d3f','#f0c96a','#4b7bec','#55b987','#a56bdb','#d8d8d8','#6b6b6b','#242424','#e7b7a5','#88a9d6','#d6d28b','#6f8f78','#b98b68','#7e6a91','#c7a94d','#8c4d4d','#3c6370','#eeeeee']};
+const defaults={"ditherMode":"diffusion","method":"floyd","matrix":4,"amount":100,"size":0,"threshold":50,"colors":2,"palettePreset":"original","colorMode":"bw","brightness":50,"contrast":50,"gamma":50,"saturation":100,"hue":50,"invert":false,"strength":100,"angle":50,"jitter":0,"serpentine":true,"ditherAlpha":false,"shape":"original","maxSize":50};
+const state={...defaults,palette:['#000000','#ffffff','#e85d3f','#f0c96a','#4b7bec','#55b987','#a56bdb','#d8d8d8','#6b6b6b','#242424','#e7b7a5','#88a9d6','#d6d28b','#6f8f78','#b98b68','#7e6a91','#c7a94d','#8c4d4d','#3c6370','#eeeeee']};
 let source=null,processed=null,renderQueued=false;
 let zoom=1,panX=0,panY=0,dragging=false,dragStartX=0,dragStartY=0,startPanX=0,startPanY=0;
 
@@ -145,11 +146,17 @@ const bayerBase={2:[[0,2],[3,1]],4:[[0,8,2,10],[12,4,14,6],[3,11,1,9],[15,7,13,5
 function matrix16(){const b=bayerBase[8],out=[];for(let y=0;y<16;y++){out[y]=[];for(let x=0;x<16;x++){const q=b[Math.floor(y/2)][Math.floor(x/2)],a=b[y%8][x%8];out[y][x]=4*q+a}}return out}
 bayerBase[16]=matrix16();
 
-function bind(id,key,conv=v=>+v,fmt=v=>v){
+function bind(id,key,conv=v=>+v){
  const el=$(id),num=$(id+'Num');
- const clampNum=v=>Math.max(+el.min,Math.min(+el.max,Number.isFinite(v)?v:+el.value));
- const set=v=>{const n=clampNum(+v);el.value=n;num.value=n;state[key]=conv(n);queue()};
- el.addEventListener('input',()=>set(el.value));num.addEventListener('input',()=>set(num.value));num.addEventListener('blur',()=>set(num.value));
+ const min=()=>Number(el.min),max=()=>Number(el.max);
+ const set=v=>{
+   let n=Number(v); if(!Number.isFinite(n)) n=Number(el.value);
+   n=Math.max(min(),Math.min(max(),n));
+   el.value=n; num.value=n; state[key]=conv(n); queue();
+ };
+ el.addEventListener('input',()=>set(el.value));
+ num.addEventListener('input',()=>set(num.value));
+ num.addEventListener('change',()=>set(num.value));
  set(el.value);
 }
 bind('amount','amount');bind('size','size');bind('threshold','threshold');
@@ -331,13 +338,29 @@ function loadSettings(e){
  const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{Object.assign(state,JSON.parse(r.result));syncControls();queue()}catch(err){alert('Invalid settings file.')}};r.readAsText(f)
 }
 function syncControls(){
- for(const id of ['method','matrix','colorMode','shape'])$(id).value=state[id];
- $('ditherMode').value=state.ditherMode;$('palettePreset').value=state.palettePreset;
-for(const [id,key] of Object.entries({amount:'amount',size:'size',threshold:'threshold',colors:'colors',brightness:'brightness',contrast:'contrast',gamma:'gamma',saturation:'saturation',hue:'hue',strength:'strength',angle:'angle',jitter:'jitter',maxSize:'maxSize'})){$(id).value=state[key];const o=$(id).parentElement.querySelector('output');if(o)o.textContent=$(id).value}
- $('invert').checked=state.invert;$('serpentine').checked=state.serpentine;$('ditherAlpha').checked=state.ditherAlpha;updateVisibility()
+ for(const id of ['method','matrix','colorMode','shape','ditherMode','palettePreset'])$(id).value=state[id];
+ for(const [id,key] of Object.entries({amount:'amount',size:'size',threshold:'threshold',colors:'colors',brightness:'brightness',contrast:'contrast',gamma:'gamma',saturation:'saturation',hue:'hue',strength:'strength',angle:'angle',jitter:'jitter',maxSize:'maxSize'})){
+   $(id).value=state[key];
+   $(id+'Num').value=state[key];
+ }
+ $('invert').checked=state.invert;$('serpentine').checked=state.serpentine;$('ditherAlpha').checked=state.ditherAlpha;
+ updateVisibility();
 }
 function hexRGB(h){return [parseInt(h.slice(1,3),16),parseInt(h.slice(3,5),16),parseInt(h.slice(5,7),16)]}
-function reset(){location.reload()}
+function showOriginal(){
+ if(!source)return;
+ const outputMax=256+Math.round(state.maxSize/100*2744),scale=Math.min(1,outputMax/Math.max(source.naturalWidth,source.naturalHeight));
+ const w=Math.max(1,Math.round(source.naturalWidth*scale)),h=Math.max(1,Math.round(source.naturalHeight*scale));
+ canvas.width=w;canvas.height=h;ctx.clearRect(0,0,w,h);ctx.drawImage(source,0,0,w,h);
+ $('status').textContent=w+' × '+h+' · ORIGINAL IMAGE';
+}
+function reset(){
+ Object.assign(state,defaults);
+ state.palette=['#000000','#ffffff','#e85d3f','#f0c96a','#4b7bec','#55b987','#a56bdb','#d8d8d8','#6b6b6b','#242424','#e7b7a5','#88a9d6','#d6d28b','#6f8f78','#b98b68','#7e6a91','#c7a94d','#8c4d4d','#3c6370','#eeeeee'];
+ zoom=1;panX=0;panY=0;applyZoom();syncControls();renderSwatches();
+ if(source){showOriginal();$('empty').style.display='none'}else{$('empty').style.display='grid';$('status').textContent='NO IMAGE'}
+ $('upload').value='';
+}
 function renderSwatches(){const s=$('swatches');s.innerHTML='';state.palette.forEach((c,i)=>{const b=document.createElement('button');b.style.background=c;b.title=c;b.onclick=()=>{const v=prompt('Hex color',c);if(/^#[0-9a-fA-F]{6}$/.test(v||'')){state.palette[i]=v;renderSwatches();queue()}};s.appendChild(b)})}
 renderSwatches();applyPalettePreset();updateVisibility();syncControls();
 </script>
