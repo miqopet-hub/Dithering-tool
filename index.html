@@ -265,11 +265,7 @@ function dither(data,w,h){
  else if(state.ditherMode==='bayer') ordered(data,out,w,h,pal);
  else if(state.ditherMode==='pattern') ordered(data,out,w,h,pal);
  else errorDiffuse(data,out,w,h,pal);
- const a=state.amount/100;
- for(let i=0;i<od.length;i+=4){
-   od[i]=src[i]*(1-a)+od[i]*a;od[i+1]=src[i+1]*(1-a)+od[i+1]*a;od[i+2]=src[i+2]*(1-a)+od[i+2]*a;
-   od[i+3]=state.ditherAlpha?src[i+3]:255;
- }
+ for(let i=0;i<od.length;i+=4) od[i+3]=state.ditherAlpha?src[i+3]:255;
  return out;
 }
 function thresholdDither(data,out,w,h,pal){
@@ -297,7 +293,7 @@ function ordered(data,out,w,h,pal){
 }
 function errorDiffuse(data,out,w,h,pal){
  const src=data.data,od=out.data,work=new Float32Array(src);
- const kernel=diffusion[state.method],cell=Math.max(1,state.size),str=state.strength/100;
+ const kernel=diffusion[state.method],cell=Math.max(1,state.size),str=(state.amount/100)*(state.strength/100);
  const block=Math.max(1,Math.round(1+state.size/100*15));
  for(let y=0;y<h;y+=block){
   const rev=state.serpentine&&(y%2===1),xs=rev?w-1:0,xe=rev?-1:w,step=rev?-1:1;
@@ -313,7 +309,7 @@ function errorDiffuse(data,out,w,h,pal){
     const ddx=rev?-dx:dx,xx=x+ddx*block,yy=y+dy*block;if(xx<0||xx>=w||yy<0||yy>=h)continue;
     let j=(yy*w+xx)*4,weight=wt;
     if(state.jitter){const z=Math.sin((xx+1)*17.13+(yy+1)*41.77)*43758.5453;weight*=1+((z-Math.floor(z))-.5)*state.jitter/100}
-    work[j]+=er*weight;work[j+1]+=eg*weight;work[j+2]+=eb*weight;
+    work[j]=clamp(work[j]+er*weight);work[j+1]=clamp(work[j+1]+eg*weight);work[j+2]=clamp(work[j+2]+eb*weight);
    }
   }
  }
