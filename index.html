@@ -84,7 +84,7 @@ select{width:100%;background:#181818;color:#eee;border:1px solid #333;border-rad
 <div class="row" id="matrixRow"><label>Matrix</label><select id="matrix"><option value="2">2 × 2</option><option value="4" selected>4 × 4</option><option value="8">8 × 8</option><option value="16">16 × 16</option></select></div>
 <div class="row"><label>Amount</label><input id="amount" type="range" min="0" max="100" value="100"><input class="num" id="amountNum" type="number" min="0" max="100" value="100"></div>
 <div class="row"><label>Pixel scale</label><input id="size" type="range" min="0" max="100" value="0"><input class="num" id="sizeNum" type="number" min="0" max="100" value="0"></div>
-<div class="row"><label>Threshold</label><input id="threshold" type="range" min="0" max="100" value="50"><input class="num" id="thresholdNum" type="number" min="0" max="100" value="50"></div>
+<div class="row" id="thresholdRow"><label>Threshold</label><input id="threshold" type="range" min="0" max="100" value="50"><input class="num" id="thresholdNum" type="number" min="0" max="100" value="50"></div>
 </section>
 
 <section class="section">
@@ -106,10 +106,10 @@ select{width:100%;background:#181818;color:#eee;border:1px solid #333;border-rad
 
 <section class="section">
 <h2>DIFFUSION / PATTERN</h2>
-<div class="row"><label>Strength</label><input id="strength" type="range" min="0" max="100" value="100"><input class="num" id="strengthNum" type="number" min="0" max="100" value="100"></div>
-<div class="row"><label>Angle</label><input id="angle" type="range" min="0" max="100" value="50"><input class="num" id="angleNum" type="number" min="0" max="100" value="50"></div>
-<div class="row"><label>Jitter</label><input id="jitter" type="range" min="0" max="100" value="0"><input class="num" id="jitterNum" type="number" min="0" max="100" value="0"></div>
-<div class="check"><input id="serpentine" type="checkbox" checked><label for="serpentine">Serpentine scan</label></div>
+<div class="row" id="strengthRow"><label>Strength</label><input id="strength" type="range" min="0" max="100" value="100"><input class="num" id="strengthNum" type="number" min="0" max="100" value="100"></div>
+<div class="row" id="angleRow"><label>Angle</label><input id="angle" type="range" min="0" max="100" value="50"><input class="num" id="angleNum" type="number" min="0" max="100" value="50"></div>
+<div class="row" id="jitterRow"><label>Jitter</label><input id="jitter" type="range" min="0" max="100" value="0"><input class="num" id="jitterNum" type="number" min="0" max="100" value="0"></div>
+<div class="check" id="serpentineRow"><input id="serpentine" type="checkbox" checked><label for="serpentine">Serpentine scan</label></div>
 <div class="check"><input id="ditherAlpha" type="checkbox"><label for="ditherAlpha">Dither transparency</label></div>
 </section>
 
@@ -156,8 +156,14 @@ bind('amount','amount');bind('size','size');bind('threshold','threshold');
 bind('colors','colors');bind('brightness','brightness');bind('contrast','contrast');bind('gamma','gamma');
 bind('saturation','saturation');bind('hue','hue');bind('strength','strength');bind('angle','angle');bind('jitter','jitter');bind('maxSize','maxSize');
 function updateVisibility(){
- $('matrixRow').style.display=state.ditherMode==='bayer'?'grid':'none';
- $('algorithmRow').style.display=state.ditherMode==='diffusion'?'grid':'none';
+ const mode=state.ditherMode;
+ $('algorithmRow').style.display=mode==='diffusion'?'grid':'none';
+ $('matrixRow').style.display=mode==='bayer'?'grid':'none';
+ $('thresholdRow').style.display=(mode==='bayer'||mode==='threshold')?'grid':'none';
+ $('strengthRow').style.display=mode==='diffusion'?'grid':'none';
+ $('jitterRow').style.display=mode==='diffusion'?'grid':'none';
+ $('serpentineRow').style.display=mode==='diffusion'?'flex':'none';
+ $('angleRow').style.display=(mode==='bayer'||mode==='pattern')?'grid':'none';
 }
 function applyPalettePreset(){
  const p=state.palettePreset;
